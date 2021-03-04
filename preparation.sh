@@ -64,11 +64,11 @@ do
  esac
 done
 
-# CREATE DEFAULT .ENV FILE, ALL DOCKER-COMPOSE FILES REFER TO THIS .ENV FILE
-if [ ! -f ".env" ]; 
+# CREATE DEFAULT ./docker-home-services/.env FILE, ALL DOCKER-COMPOSE FILES REFER TO THIS ./docker-home-services/.env FILE
+if [ ! -f "./docker-home-services/./docker-home-services/.env" ]; 
 then
-printf "${color_green}No .env file found, creating a new .env with empty values${color_no}"
-cat << EOF > .env
+printf "${color_green}No ./docker-home-services/.env file found, creating a new ./docker-home-services/.env with empty values${color_no}"
+cat << EOF > ./docker-home-services/./docker-home-services/.env
 TZ: Europe/Amsterdam
 
 ### HOME_ASSISTANT_DB ###
@@ -135,29 +135,29 @@ printf "\n"
 fi
 
 
-# ASK FOR VARIABLES TO PUT THESE INTO THE .ENV
+# ASK FOR VARIABLES TO PUT THESE INTO THE ./docker-home-services/.env
 # MYSQL USER
-if grep -qFx "HOME_ASSISTANT_MYSQL_USER=replace!" .env
+if grep -qFx "HOME_ASSISTANT_MYSQL_USER=replace!" ./docker-home-services/./docker-home-services/.env
 then
 printf "${color_green}Enter a MYSQL USER for the Home Assistant database:${color_no}"
 read home_assistant_mysql_user
-sudo sed -i "s/HOME_ASSISTANT_MYSQL_USER=replace!/HOME_ASSISTANT_MYSQL_USER=$home_assistant_mysql_user/" .env
+sudo sed -i "s/HOME_ASSISTANT_MYSQL_USER=replace!/HOME_ASSISTANT_MYSQL_USER=$home_assistant_mysql_user/" ./docker-home-services/.env
 fi
 
 # MYSQL PASSWORD
-if grep -qFx "HOME_ASSISTANT_MYSQL_PASSWORD=replace!" .env
+if grep -qFx "HOME_ASSISTANT_MYSQL_PASSWORD=replace!" ./docker-home-services/.env
 then
 printf "${color_green}Enter a MYSQL password for the Home Assistant database:${color_no}"
 read -s home_assistant_mysql_password
-sudo sed -i "s/HOME_ASSISTANT_MYSQL_PASSWORD=replace!/HOME_ASSISTANT_MYSQL_PASSWORD=$home_assistant_mysql_password/" .env
+sudo sed -i "s/HOME_ASSISTANT_MYSQL_PASSWORD=replace!/HOME_ASSISTANT_MYSQL_PASSWORD=$home_assistant_mysql_password/" ./docker-home-services/.env
 printf "\n"
 fi
 
 # MYSQL ROOT PASSWORD
-if grep -qFx "HOME_ASSISTANT_MYSQL_ROOT_PASSWORD=replace!" .env
+if grep -qFx "HOME_ASSISTANT_MYSQL_ROOT_PASSWORD=replace!" ./docker-home-services/.env
 then
 printf "${color_green}Enter a MYSQL root password for the Home Assistant database:${color_no}"
 read -s home_assistant_mysql_root_password
-sudo sed -i "s/HOME_ASSISTANT_MYSQL_ROOT_PASSWORD=replace!/HOME_ASSISTANT_MYSQL_ROOT_PASSWORD=$home_assistant_mysql_root_password/" .env
+sudo sed -i "s/HOME_ASSISTANT_MYSQL_ROOT_PASSWORD=replace!/HOME_ASSISTANT_MYSQL_ROOT_PASSWORD=$home_assistant_mysql_root_password/" ./docker-home-services/.env
 printf "\n"
 fi
