@@ -38,9 +38,6 @@ and the following images on Docker:
 EOF
 
 
-# MAKE DOCKER DIRECTORY IN HOME FOLDER
-mkdir ${base_dir} 2>/dev/null
-
 while true
 do
  printf "${color_green}"
