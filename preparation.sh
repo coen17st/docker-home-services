@@ -37,7 +37,6 @@ and the following images on Docker:
 =============================================================================================================
 EOF
 
-
 while true
 do
  printf "${color_green}"
@@ -115,6 +114,22 @@ git config --global user.name "${user_name}"
 printf "\n"
 fi
 
+
+# HOME ASSISTANT
+#
+# CREATE DEFAULT .ENV FILE
+if [ ! -f "./prd-home-assistant/.env" ]; 
+then
+printf "${color_green}No .env file found, creating a new .env with empty values${color_no}"
+cat << EOF > ./prd-home-assistant/.env
+HOME_ASSISTANT_MYSQL_USER=replace!
+HOME_ASSISTANT_MYSQL_ROOT_PASSWORD=replace!
+HOME_ASSISTANT_MYSQL_PASSWORD=replace!
+HOME_ASSISTANT_MYSQL_DATABASE=home_assistant_db
+TZ: Europe/Amsterdam
+EOF
+printf "\n\n"
+fi
 
 # ASK FOR VARIABLES TO PUT THESE INTO THE .ENV FILE
 # MYSQL USER
