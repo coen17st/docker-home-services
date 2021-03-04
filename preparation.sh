@@ -1,8 +1,4 @@
 #!/bin/bash
-
-# CHANGE THE VARIABLES BELOW (OPTIONAL)
-base_dir="${HOME}/docker"
-
 # DON'T CHANGE ANYTHING BELOW
 sleepseconds="2"
 ip4=$(hostname -I | cut -d' ' -f1)
