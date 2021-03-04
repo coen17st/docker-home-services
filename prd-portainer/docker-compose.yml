@@ -1,9 +1,9 @@
-version: '3.1'
+version: '3.7'
 services:
 
-  prd-portainer:
+  prd-portainer-app:
     image: portainer/portainer-ce:latest
-    container_name: prd-portainer
+    container_name: prd-portainer-app
     command: -H unix:///var/run/docker.sock
     restart: always
     ports:
@@ -13,13 +13,13 @@ services:
       home-services:
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-      - prd-portainer_data:/data
+      - prd-portainer-app-data:/data
 
 # VOLUMES
 volumes:
 
-  prd-portainer_data:
-    name: prd-portainer_data
+  prd-portainer-app-data:
+    name: prd-portainer-app-data
 
 # NETWORKS
 networks:

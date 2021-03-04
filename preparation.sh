@@ -123,10 +123,10 @@ then
 printf "${color_green}No .env file found, creating a new .env with empty values${color_no}"
 cat << EOF > ./prd-home-assistant/.env
 HOME_ASSISTANT_MYSQL_USER=replace!
-HOME_ASSISTANT_MYSQL_ROOT_PASSWORD=replace!
 HOME_ASSISTANT_MYSQL_PASSWORD=replace!
+HOME_ASSISTANT_MYSQL_ROOT_PASSWORD=replace!
 HOME_ASSISTANT_MYSQL_DATABASE=home_assistant_db
-TZ: Europe/Amsterdam
+TZ=Europe/Amsterdam
 EOF
 printf "\n\n"
 fi
@@ -157,3 +157,64 @@ read -s home_assistant_mysql_root_password
 sudo sed -i "s/HOME_ASSISTANT_MYSQL_ROOT_PASSWORD=replace!/HOME_ASSISTANT_MYSQL_ROOT_PASSWORD=$home_assistant_mysql_root_password/" ./prd-home-assistant/.env
 printf "\n"
 fi
+
+# BUILDING CUSTOM HOME ASSISTANT IMAGE
+printf "${color_green}Building custom Home Assistant image\n${color_no}"
+sleep ${sleepseconds}
+# GO INTO HOME-ASSISTANT DIRECTORY
+cd prd-home-assistant
+# BUILD DOCKER IMAGE
+sudo docker build -t prd-home-assistant-app .
+# GO BACK
+cd ..
+printf "\n"
+
+# ADGUARD HOME
+#
+# FREE PORT 53 FOR ADGUARD
+if grep -qFx "#DNSStubListener=yes" /etc/systemd/resolved.conf
+then
+sudo sed -i "s|#DNSStubListener=yes|DNSStubListener=no|g" /etc/systemd/resolved.conf
+sudo systemctl restart systemd-resolved
+printf "${color_green}Opend port 53 for adguardhome\n\n${color_no}"
+    if [ $? -ne 0 ]
+    then
+    printf "${color_green}Failed to change DNSStubListener\n\n${color_no}"
+    fi
+fi
+
+
+
+
+
+
+
+
+
+
+# DOCKER COMPOSE UP
+while true
+do
+ printf "${color_green}"
+ read -r -p "Do you wish to (re)create and start the docker containers? [Y/n]" input
+ printf "${color_no}"
+ 
+ case $input in
+     [yY][eE][sS]|[yY])
+
+        printf "${color_green}Starting the docker containers\n${color_no}"
+        sudo docker-compose -f ./prd-portainer/docker-compose.yml up -d \
+        && sudo docker-compose -f ./prd-adguard-home/docker-compose.yml up -d \
+        && sudo docker-compose -f ./prd-home-assistant/docker-compose.yml up -d
+        break
+ ;;
+     [nN][oO]|[nN])
+
+        printf "\n"
+ break
+        ;;
+     *)
+ echo "Invalid input..."
+ ;;
+ esac
+done
