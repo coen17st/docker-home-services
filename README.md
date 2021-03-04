@@ -4,7 +4,9 @@ My personal home services running in docker containers
 ## Installation
 ### Clone this repository, allow execute and start setup.
 ```
-git clone https://github.com/coen17st/docker-home-services.git \
-&& chmod -R 0755 ./docker-home-services/ \
-&& ./docker-home-services/preperation.sh
+cd ${HOME}/docker \
+&& git clone https://github.com/coen17st/docker-home-services.git \
+&& cd docker-home-services \
+&& chmod 0755 preparation.sh \
+&& .preperation.sh
 ```
