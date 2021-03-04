@@ -1,0 +1,32 @@
+version: '3.1'
+services:
+
+  prd-portainer:
+    image: portainer/portainer-ce:latest
+    container_name: prd-portainer
+    command: -H unix:///var/run/docker.sock
+    restart: always
+    ports:
+      - 9000:9000
+      - 8000:8000
+    networks:
+      home-services:
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - prd-portainer_data:/data
+
+# VOLUMES
+volumes:
+
+  prd-portainer_data:
+    name: prd-portainer_data
+
+# NETWORKS
+networks:
+
+  home-services:
+    driver: bridge
+    name: home-services
+    ipam:
+      config:
+        - subnet: 172.20.0.0/16

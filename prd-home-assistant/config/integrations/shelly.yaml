@@ -1,0 +1,30 @@
+shelly:
+  host_ip: !secret host_ip
+  sensors:
+    - switch
+    - current_consumption
+  discover_by_ip:
+    - !secret diner_table_ip
+    - '192.168.1.43' #i3
+    - '192.168.1.53'
+    - '192.168.1.54'
+    - '192.168.1.55'
+    - '192.168.1.56'
+    - '192.168.1.57'
+    - '192.168.1.58'
+    - '192.168.1.59'
+    - '192.168.1.60'
+    - '192.168.1.62'
+    - '192.168.1.203'
+    - '192.168.1.215'
+    - '192.168.1.223'
+    - '192.168.1.237'
+  devices:  
+  - id: "768885"
+    light_switch: true
+  - id: "8CAAB5055BA0"
+    light_switch: true
+  - id: "40F520053A34"
+    light_switch: true
+  - id: "DBEEEB"
+    light_switch: true

@@ -1,0 +1,20 @@
+version: '3.7'
+services:
+
+  prd-home-assistant:
+    image: prd-home-assistant:latest
+    container_name: prd-home-assistant
+    depends_on:
+      prd-mariadb:
+        condition: service_healthy
+    restart: unless-stopped
+    volumes:
+      - ./config:/config
+    environment:
+      TZ: Europe/Amsterdam
+    network_mode: host
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8123"]
+      interval: 1m
+      timeout: 10s
+      retries: 3

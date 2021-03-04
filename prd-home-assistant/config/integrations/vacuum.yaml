@@ -1,0 +1,5 @@
+vacuum:
+- platform: xiaomi_miio
+  friendly_name: Robot Stofzuiger
+  host: !secret vacuum_ip
+  token: !secret vacuum_token
