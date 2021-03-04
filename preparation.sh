@@ -55,7 +55,6 @@ do
      [yY][eE][sS]|[yY])
 
         printf "${color_green}Update system\n${color_no}"
-        sleep ${sleepseconds}
         sudo apt update -y \
         && sudo apt upgrade -y
         printf "\n"
