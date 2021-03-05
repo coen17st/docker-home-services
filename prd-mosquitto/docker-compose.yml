@@ -20,7 +20,7 @@ services:
 volumes:
 
   prd-mosquitto-app_data:
-    name: prd-mosquitto-app_data
+    name: prd-mosquitto-app-data
 
 # NETWORKS
 networks:

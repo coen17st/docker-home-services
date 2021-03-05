@@ -2,6 +2,7 @@ version: '3.7'
 services:
 
   prd-home-assistant-app:
+    build: .
     image: prd-home-assistant-app:latest
     container_name: prd-home-assistant-app
     depends_on:
