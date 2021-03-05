@@ -160,11 +160,35 @@ dhcp:
     ra_slaac_only: false
     ra_allow_slaac: false
 clients:
-- name: TABLET-01
-  tags:
-  - device_other
+- name: NEST-PROTECT-WOONKAMER
+  tags: []
   ids:
-  - 192.168.1.63
+  - 192.168.1.47
+  use_global_settings: true
+  filtering_enabled: false
+  parental_enabled: false
+  safesearch_enabled: false
+  safebrowsing_enabled: false
+  use_global_blocked_services: true
+  blocked_services: []
+  upstreams: []
+- name: TV-WOONKAMER
+  tags:
+  - device_tv
+  ids:
+  - 192.168.1.36
+  use_global_settings: true
+  filtering_enabled: false
+  parental_enabled: false
+  safesearch_enabled: false
+  safebrowsing_enabled: false
+  use_global_blocked_services: true
+  blocked_services: []
+  upstreams: []
+- name: NEST-PROTECT-HAL-BOVEN
+  tags: []
+  ids:
+  - 192.168.1.48
   use_global_settings: true
   filtering_enabled: false
   parental_enabled: false
@@ -178,6 +202,19 @@ clients:
   - device_other
   ids:
   - 192.168.1.11
+  use_global_settings: true
+  filtering_enabled: false
+  parental_enabled: false
+  safesearch_enabled: false
+  safebrowsing_enabled: false
+  use_global_blocked_services: true
+  blocked_services: []
+  upstreams: []
+- name: LAPTOP-02
+  tags:
+  - device_laptop
+  ids:
+  - 192.168.1.186
   use_global_settings: true
   filtering_enabled: false
   parental_enabled: false
@@ -211,35 +248,23 @@ clients:
   use_global_blocked_services: true
   blocked_services: []
   upstreams: []
-- name: LAPTOP-02
-  tags:
-  - device_laptop
-  ids:
-  - 192.168.1.186
-  use_global_settings: true
-  filtering_enabled: false
-  parental_enabled: false
-  safesearch_enabled: false
-  safebrowsing_enabled: false
-  use_global_blocked_services: true
-  blocked_services: []
-  upstreams: []
-- name: NEST-PROTECT-HAL-BOVEN
-  tags: []
-  ids:
-  - 192.168.1.48
-  use_global_settings: true
-  filtering_enabled: false
-  parental_enabled: false
-  safesearch_enabled: false
-  safebrowsing_enabled: false
-  use_global_blocked_services: true
-  blocked_services: []
-  upstreams: []
 - name: GOOGLE-HOME
   tags: []
   ids:
   - 192.168.1.22
+  use_global_settings: true
+  filtering_enabled: false
+  parental_enabled: false
+  safesearch_enabled: false
+  safebrowsing_enabled: false
+  use_global_blocked_services: true
+  blocked_services: []
+  upstreams: []
+- name: TABLET-01
+  tags:
+  - device_other
+  ids:
+  - 192.168.1.63
   use_global_settings: true
   filtering_enabled: false
   parental_enabled: false
@@ -253,31 +278,6 @@ clients:
   - device_phone
   ids:
   - 192.168.1.14
-  use_global_settings: true
-  filtering_enabled: false
-  parental_enabled: false
-  safesearch_enabled: false
-  safebrowsing_enabled: false
-  use_global_blocked_services: true
-  blocked_services: []
-  upstreams: []
-- name: TV-WOONKAMER
-  tags:
-  - device_tv
-  ids:
-  - 192.168.1.36
-  use_global_settings: true
-  filtering_enabled: false
-  parental_enabled: false
-  safesearch_enabled: false
-  safebrowsing_enabled: false
-  use_global_blocked_services: true
-  blocked_services: []
-  upstreams: []
-- name: NEST-PROTECT-WOONKAMER
-  tags: []
-  ids:
-  - 192.168.1.47
   use_global_settings: true
   filtering_enabled: false
   parental_enabled: false

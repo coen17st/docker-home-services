@@ -114,60 +114,46 @@ git config --global user.name "${user_name}"
 printf "\n"
 fi
 
-
-# HOME ASSISTANT
-#
-# CREATE DEFAULT .ENV FILE
-if [ ! -f "./prd-home-assistant/.env" ]; 
+# CREATE .ENV FILES
+# ADGUARD HOME
+if [ ! -f "./prd-adguard-home/.env" ]; 
 then
-printf "${color_green}No .env file found, creating a new .env with empty values${color_no}"
-cat << EOF > ./prd-home-assistant/.env
-HOME_ASSISTANT_MYSQL_USER=replace!
-HOME_ASSISTANT_MYSQL_PASSWORD=replace!
-HOME_ASSISTANT_MYSQL_ROOT_PASSWORD=replace!
-HOME_ASSISTANT_MYSQL_DATABASE=home_assistant_db
-TZ=Europe/Amsterdam
-EOF
+printf "${color_green}Creating default .env files${color_no}"
+cp ./prd-adguard-home/.env.example ./prd-adguard-home/.env
 printf "\n\n"
 fi
-
+# CREATE .ENV FILES
+# HOME ASSISTANT
+if [ ! -f "./prd-home-assistant/.env" ]; 
+then
+printf "${color_green}Creating default .env files${color_no}"
+cp ./prd-home-assistant/.env.example ./prd-home-assistant/.env
+printf "\n\n"
+fi
 # ASK FOR VARIABLES TO PUT THESE INTO THE .ENV FILE
 # MYSQL USER
-if grep -qFx "HOME_ASSISTANT_MYSQL_USER=replace!" ./prd-home-assistant/.env
+if grep -qFx "HOME_ASSISTANT_MYSQL_USER=" ./prd-home-assistant/.env
 then
 printf "${color_green}Enter a MYSQL USER for the Home Assistant database:${color_no}"
 read home_assistant_mysql_user
-sudo sed -i "s/HOME_ASSISTANT_MYSQL_USER=replace!/HOME_ASSISTANT_MYSQL_USER=$home_assistant_mysql_user/" ./prd-home-assistant/.env
+sudo sed -i "s/HOME_ASSISTANT_MYSQL_USER=/HOME_ASSISTANT_MYSQL_USER=$home_assistant_mysql_user/" ./prd-home-assistant/.env
 fi
-
 # MYSQL PASSWORD
-if grep -qFx "HOME_ASSISTANT_MYSQL_PASSWORD=replace!" ./prd-home-assistant/.env
+if grep -qFx "HOME_ASSISTANT_MYSQL_PASSWORD=" ./prd-home-assistant/.env
 then
 printf "${color_green}Enter a MYSQL password for the Home Assistant database:${color_no}"
 read -s home_assistant_mysql_password
-sudo sed -i "s/HOME_ASSISTANT_MYSQL_PASSWORD=replace!/HOME_ASSISTANT_MYSQL_PASSWORD=$home_assistant_mysql_password/" ./prd-home-assistant/.env
+sudo sed -i "s/HOME_ASSISTANT_MYSQL_PASSWORD=/HOME_ASSISTANT_MYSQL_PASSWORD=$home_assistant_mysql_password/" ./prd-home-assistant/.env
 printf "\n"
 fi
-
 # MYSQL ROOT PASSWORD
-if grep -qFx "HOME_ASSISTANT_MYSQL_ROOT_PASSWORD=replace!" ./prd-home-assistant/.env
+if grep -qFx "HOME_ASSISTANT_MYSQL_ROOT_PASSWORD=" ./prd-home-assistant/.env
 then
 printf "${color_green}Enter a MYSQL root password for the Home Assistant database:${color_no}"
 read -s home_assistant_mysql_root_password
-sudo sed -i "s/HOME_ASSISTANT_MYSQL_ROOT_PASSWORD=replace!/HOME_ASSISTANT_MYSQL_ROOT_PASSWORD=$home_assistant_mysql_root_password/" ./prd-home-assistant/.env
+sudo sed -i "s/HOME_ASSISTANT_MYSQL_ROOT_PASSWORD=/HOME_ASSISTANT_MYSQL_ROOT_PASSWORD=$home_assistant_mysql_root_password/" ./prd-home-assistant/.env
 printf "\n"
 fi
-
-# BUILDING CUSTOM HOME ASSISTANT IMAGE
-printf "${color_green}Building custom Home Assistant image\n${color_no}"
-sleep ${sleepseconds}
-# GO INTO HOME-ASSISTANT DIRECTORY
-cd prd-home-assistant
-# BUILD DOCKER IMAGE
-sudo docker build -t prd-home-assistant-app .
-# GO BACK
-cd ..
-printf "\n"
 
 # ADGUARD HOME
 #
@@ -184,17 +170,10 @@ printf "${color_green}Opend port 53 for adguardhome\n\n${color_no}"
 fi
 
 
-
-
-
-
-
-
-
-
 # DOCKER COMPOSE UP
 while true
 do
+id $user
  printf "${color_green}"
  read -r -p "Do you wish to (re)create and start the docker containers? [Y/n]" input
  printf "${color_no}"
@@ -203,9 +182,9 @@ do
      [yY][eE][sS]|[yY])
 
         printf "${color_green}Starting the docker containers\n${color_no}"
-        sudo docker-compose -f ./prd-portainer/docker-compose.yml up -d \
-        && sudo docker-compose -f ./prd-adguard-home/docker-compose.yml up -d \
-        && sudo docker-compose -f ./prd-home-assistant/docker-compose.yml up -d
+        sudo docker-compose -f ./prd-portainer/docker-compose.yml up -d
+        sudo docker-compose -f ./prd-adguard-home/docker-compose.yml up -d  
+        sudo docker-compose -f ./prd-home-assistant/docker-compose.yml up -d
         break
  ;;
      [nN][oO]|[nN])
@@ -218,3 +197,4 @@ do
  ;;
  esac
 done
+
