@@ -114,6 +114,7 @@ git config --global user.name "${user_name}"
 printf "\n"
 fi
 
+
 # CREATE .ENV FILES
 # ADGUARD HOME
 if [ ! -f "./prd-adguard-home/.env" ]; 
@@ -122,6 +123,19 @@ printf "${color_green}Creating default .env files${color_no}"
 cp ./prd-adguard-home/.env.example ./prd-adguard-home/.env
 printf "\n\n"
 fi
+# FREE PORT 53 FOR ADGUARD
+if grep -qFx "#DNSStubListener=yes" /etc/systemd/resolved.conf
+then
+sudo sed -i "s|#DNSStubListener=yes|DNSStubListener=no|g" /etc/systemd/resolved.conf
+sudo systemctl restart systemd-resolved
+printf "${color_green}Opend port 53 for adguardhome\n\n${color_no}"
+    if [ $? -ne 0 ]
+    then
+    printf "${color_green}Failed to change DNSStubListener\n\n${color_no}"
+    fi
+fi
+
+
 # CREATE .ENV FILES
 # HOME ASSISTANT
 if [ ! -f "./prd-home-assistant/.env" ]; 
@@ -155,25 +169,20 @@ sudo sed -i "s/HOME_ASSISTANT_MYSQL_ROOT_PASSWORD=/HOME_ASSISTANT_MYSQL_ROOT_PAS
 printf "\n"
 fi
 
-# ADGUARD HOME
-#
-# FREE PORT 53 FOR ADGUARD
-if grep -qFx "#DNSStubListener=yes" /etc/systemd/resolved.conf
+
+# CREATE .ENV FILES
+# MOSQUITTO
+if [ ! -f "./prd-mosquitto/.env" ]; 
 then
-sudo sed -i "s|#DNSStubListener=yes|DNSStubListener=no|g" /etc/systemd/resolved.conf
-sudo systemctl restart systemd-resolved
-printf "${color_green}Opend port 53 for adguardhome\n\n${color_no}"
-    if [ $? -ne 0 ]
-    then
-    printf "${color_green}Failed to change DNSStubListener\n\n${color_no}"
-    fi
+printf "${color_green}Creating default .env files${color_no}"
+cp ./prd-mosquitto/.env.example ./prd-mosquitto/.env
+printf "\n\n"
 fi
 
 
 # DOCKER COMPOSE UP
 while true
 do
-id $user
  printf "${color_green}"
  read -r -p "Do you wish to (re)create and start the docker containers? [Y/n]" input
  printf "${color_no}"
@@ -185,6 +194,7 @@ id $user
         sudo docker-compose -f ./prd-portainer/docker-compose.yml up -d
         sudo docker-compose -f ./prd-adguard-home/docker-compose.yml up -d  
         sudo docker-compose -f ./prd-home-assistant/docker-compose.yml up -d
+        sudo docker-compose -f ./prd-mosquitto/docker-compose.yml up -d
         break
  ;;
      [nN][oO]|[nN])
