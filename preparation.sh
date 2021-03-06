@@ -39,28 +39,25 @@ EOF
 
 while true
 do
- printf "${color_green}"
- read -r -p "Do you wish to update and upgrade the system? [Y/n]" input
- printf "${color_no}"
- 
- case $input in
-     [yY][eE][sS]|[yY])
-
+printf "${color_green}"
+read -r -p "Do you wish to update and upgrade the system? [Y/n]" input
+printf "${color_no}"
+    case $input in
+    [yY][eE][sS]|[yY])
         printf "${color_green}Update system\n${color_no}"
         sudo apt update -y \
         && sudo apt upgrade -y
         printf "\n"
- break
- ;;
-     [nN][oO]|[nN])
-
+    break
+    ;;
+    [nN][oO]|[nN])
         printf "\n"
- break
-        ;;
-     *)
- echo "Invalid input..."
- ;;
- esac
+    break
+    ;;
+    *)
+    echo "Invalid input..."
+    ;;
+    esac
 done
 
 
@@ -115,10 +112,10 @@ printf "\n"
 fi
 
 
-# CREATE .ENV FILES
 # ADGUARD HOME
 if [ ! -f "./prd-adguard-home/.env" ]; 
 then
+# CREATE .ENV FILE
 printf "${color_green}Creating default .env files${color_no}"
 cp ./prd-adguard-home/.env.example ./prd-adguard-home/.env
 printf "\n\n"
@@ -136,10 +133,10 @@ printf "${color_green}Opend port 53 for adguardhome\n\n${color_no}"
 fi
 
 
-# CREATE .ENV FILES
 # HOME ASSISTANT
 if [ ! -f "./prd-home-assistant/.env" ]; 
 then
+# CREATE .ENV FILE
 printf "${color_green}Creating default .env files${color_no}"
 cp ./prd-home-assistant/.env.example ./prd-home-assistant/.env
 printf "\n\n"
@@ -170,23 +167,67 @@ printf "\n"
 fi
 
 
-# CREATE .ENV FILES
 # MOSQUITTO
 if [ ! -f "./prd-mosquitto/.env" ]; 
 then
+# CREATE .ENV FILE
 printf "${color_green}Creating default .env files${color_no}"
 cp ./prd-mosquitto/.env.example ./prd-mosquitto/.env
 printf "\n\n"
 fi
 
+# NGINX-CERTBOT
+while true
+do
+# ASK IF ROUTER PORTS ARE SET UP CORRECTLY
+printf "${color_green}"
+read -r -p "Check if port 443 and 80 are open to ${ip4} in the router settings. Are these ports open? [Y/n]" input
+printf "${color_no}"
+    case $input in
+    [yY][eE][sS]|[yY])
+# IF YES, SET THE FIREWALL RULES TO ALLOW TRAFFIC ON 80 AND 443.
+        sudo apt-get install ufw -y \
+        && sudo ufw allow 80 \
+        && sudo ufw allow 443 \
+        && sudo ufw enable \
+        && sudo ufw status verbose
+# START NGINX-CERTBOT SCRIPT 
+        printf "${color_green}Start bash script for nginx-certbot\n\n${color_no}"
+        cd prd-nginx-certbot \
+        && sudo ./init-letsencrypt.sh
+        cd ..
+        if [ $? -ne 0 ]
+        then
+        printf "${color_green}Failed to start nginx-certbot bash script\n\n${color_no}"
+        else
+        printf "\n"
+        printf "${color_green}nginx-certbot setup was succesfully\n${color_no}"
+        fi
+    break
+    ;;
+    [nN][oO]|[nN])
+
+        printf "\n"
+        
+    break
+    ;;
+    *)
+    echo "Invalid input..."
+    ;;
+    esac
+done
+
 
 # PLEX CLAIM TOKEN
 if [ ! -f "./prd-plex/.env" ]; 
 then
+# CREATE .ENV FILE
 printf "${color_green}Creating default .env files${color_no}"
 cp ./prd-plex/.env.example ./prd-plex/.env
 printf "\n\n"
 fi
+# ASK FOR VARIABLES TO PUT THESE INTO THE .ENV FILE
+# PLEX CLAIM TOKEN
 if grep -qFx "PLEX_CLAIMTOKEN=" ./prd-plex/.env
 then
 printf "${color_green}Enter your Plex Claimtoken, you can obtain a claim token to login your server to your plex account by visiting https://www.plex.tv/claim ${color_no}"
@@ -200,29 +241,34 @@ fi
 # DOCKER COMPOSE UP
 while true
 do
- printf "${color_green}"
- read -r -p "Do you wish to (re)create and start the docker containers? [Y/n]" input
- printf "${color_no}"
- 
- case $input in
-     [yY][eE][sS]|[yY])
-
+printf "${color_green}"
+read -r -p "Are Do you wish to (re)create and start the docker containers? [Y/n]" input
+printf "${color_no}"
+    case $input in
+    [yY][eE][sS]|[yY])
         printf "${color_green}Starting the docker containers\n${color_no}"
         sudo docker-compose -f ./prd-portainer/docker-compose.yml up -d
         sudo docker-compose -f ./prd-adguard-home/docker-compose.yml up -d  
         sudo docker-compose -f ./prd-home-assistant/docker-compose.yml up -d
         sudo docker-compose -f ./prd-mosquitto/docker-compose.yml up -d
         sudo docker-compose -f ./prd-plex/docker-compose.yml up -d
-        break
- ;;
-     [nN][oO]|[nN])
+        sudo docker-compose -f ./prd-nginx-certbot/docker-compose.yml up -d
+    break
+    ;;
+    [nN][oO]|[nN])
 
         printf "\n"
- break
-        ;;
-     *)
- echo "Invalid input..."
- ;;
- esac
+        
+    break
+    ;;
+    *)
+    echo "Invalid input..."
+    ;;
+    esac
 done
 
+# ------------ LAST COMMAND --------------
+# REMOVE ALL IMAGES NOT REFERENCED BY ANY CONTAINER
+printf "${color_green}Remove all images not referenced by any container\n\n${color_no}"
+sleep ${sleepseconds}
+sudo docker image prune --all --force

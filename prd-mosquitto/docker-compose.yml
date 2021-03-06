@@ -10,7 +10,7 @@ services:
     volumes:
       - ./config/:/mosquitto/config/
       - ./log:/mosquitto/log
-      - prd-mosquitto-app_data:/mosquitto/data
+      - prd-mosquitto-app-data:/mosquitto/data
     ports:
       - 1883:1883
     networks:
@@ -19,7 +19,7 @@ services:
 # VOLUMES
 volumes:
 
-  prd-mosquitto-app_data:
+  prd-mosquitto-app-data:
     name: prd-mosquitto-app-data
 
 # NETWORKS
