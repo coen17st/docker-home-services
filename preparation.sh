@@ -180,6 +180,23 @@ printf "\n\n"
 fi
 
 
+# PLEX CLAIM TOKEN
+if [ ! -f "./prd-plex/.env" ]; 
+then
+printf "${color_green}Creating default .env files${color_no}"
+cp ./prd-plex/.env.example ./prd-plex/.env
+printf "\n\n"
+fi
+if grep -qFx "PLEX_CLAIMTOKEN=" ./prd-plex/.env
+then
+printf "${color_green}Enter your Plex Claimtoken, you can obtain a claim token to login your server to your plex account by visiting https://www.plex.tv/claim ${color_no}"
+printf "${color_green}\nPLEX CLAIMTOKEN:${color_no}"
+read plex_claimtoken
+sudo sed -i "s/PLEX_CLAIMTOKEN=/PLEX_CLAIMTOKEN=$plex_claimtoken/" ./prd-plex/.env
+printf "\n"
+fi
+
+
 # DOCKER COMPOSE UP
 while true
 do
@@ -195,6 +212,7 @@ do
         sudo docker-compose -f ./prd-adguard-home/docker-compose.yml up -d  
         sudo docker-compose -f ./prd-home-assistant/docker-compose.yml up -d
         sudo docker-compose -f ./prd-mosquitto/docker-compose.yml up -d
+        sudo docker-compose -f ./prd-plex/docker-compose.yml up -d
         break
  ;;
      [nN][oO]|[nN])
