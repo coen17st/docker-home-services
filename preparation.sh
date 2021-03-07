@@ -1,6 +1,5 @@
 #!/bin/bash
 # DON'T CHANGE ANYTHING BELOW
-sleepseconds="2"
 ip4=$(hostname -I | cut -d' ' -f1)
 date=`date '+%Y-%m-%d %H:%M:%S'`
 color_blue='\033[1;34m'
@@ -116,7 +115,7 @@ fi
 if [ ! -f "./prd-adguard-home/.env" ]; 
 then
 # CREATE .ENV FILE
-printf "${color_green}Creating default .env files${color_no}"
+printf "${color_green}Creating default .env file for prd-adguard-home${color_no}"
 cp ./prd-adguard-home/.env.example ./prd-adguard-home/.env
 printf "\n\n"
 fi
@@ -137,7 +136,7 @@ fi
 if [ ! -f "./prd-home-assistant/.env" ]; 
 then
 # CREATE .ENV FILE
-printf "${color_green}Creating default .env files${color_no}"
+printf "${color_green}Creating default .env file for prd-home-assistant${color_no}"
 cp ./prd-home-assistant/.env.example ./prd-home-assistant/.env
 printf "\n\n"
 fi
@@ -171,8 +170,17 @@ fi
 if [ ! -f "./prd-mosquitto/.env" ]; 
 then
 # CREATE .ENV FILE
-printf "${color_green}Creating default .env files${color_no}"
+printf "${color_green}Creating default .env file for prd-moquitto${color_no}"
 cp ./prd-mosquitto/.env.example ./prd-mosquitto/.env
+printf "\n\n"
+fi
+
+# NODE-RED
+if [ ! -f "./prd-node-red/.env" ]; 
+then
+# CREATE .ENV FILE
+printf "${color_green}Creating default .env file for prd-node-red${color_no}"
+cp ./prd-node-red/.env.example ./prd-node-red/.env
 printf "\n\n"
 fi
 
@@ -186,11 +194,12 @@ printf "${color_no}"
     case $input in
     [yY][eE][sS]|[yY])
 # IF YES, SET THE FIREWALL RULES TO ALLOW TRAFFIC ON 80 AND 443.
-        sudo apt-get install ufw -y \
-        && sudo ufw allow 80 \
-        && sudo ufw allow 443 \
-        && sudo ufw enable \
-        && sudo ufw status verbose
+       # sudo apt-get install ufw -y \
+       # && sudo ufw allow ssh \
+       # && sudo ufw allow http \
+       # && sudo ufw allow https \
+       # && sudo ufw enable \
+       # && sudo ufw status verbose
 # START NGINX-CERTBOT SCRIPT 
         printf "${color_green}Start bash script for nginx-certbot\n\n${color_no}"
         cd prd-nginx-certbot \
@@ -253,6 +262,7 @@ printf "${color_no}"
         sudo docker-compose -f ./prd-mosquitto/docker-compose.yml up -d
         sudo docker-compose -f ./prd-plex/docker-compose.yml up -d
         sudo docker-compose -f ./prd-nginx-certbot/docker-compose.yml up -d
+        sudo docker-compose -f ./prd-node-red/docker-compose.yml up -d
     break
     ;;
     [nN][oO]|[nN])
@@ -270,5 +280,4 @@ done
 # ------------ LAST COMMAND --------------
 # REMOVE ALL IMAGES NOT REFERENCED BY ANY CONTAINER
 printf "${color_green}Remove all images not referenced by any container\n\n${color_no}"
-sleep ${sleepseconds}
 sudo docker image prune --all --force

@@ -1,0 +1,27 @@
+version: "3.7"
+
+services:
+  prd-node-red-app:
+    build: .
+    image: nodered/prd-node-red:latest
+    container_name: prd-node-red-app
+    environment:
+      TZ: "${TZ}"
+      PUID: "1000"
+      PGID: "1000"
+    ports:
+      - "1880:1880"
+    networks:
+      home-services:
+    volumes:
+      - ./data:/data
+
+# NETWORKS
+networks:
+
+  home-services:
+    driver: bridge
+    name: home-services
+    ipam:
+      config:
+        - subnet: 172.20.0.0/16
