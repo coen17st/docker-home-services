@@ -193,17 +193,9 @@ read -r -p "Check if port 443 and 80 are open to ${ip4} in the router settings. 
 printf "${color_no}"
     case $input in
     [yY][eE][sS]|[yY])
-# IF YES, SET THE FIREWALL RULES TO ALLOW TRAFFIC ON 80 AND 443.
-       # sudo apt-get install ufw -y \
-       # && sudo ufw allow ssh \
-       # && sudo ufw allow http \
-       # && sudo ufw allow https \
-       # && sudo ufw enable \
-       # && sudo ufw status verbose
-# START NGINX-CERTBOT SCRIPT 
         printf "${color_green}Start bash script for nginx-certbot\n\n${color_no}"
-        cd prd-nginx-certbot \
-        && sudo ./init-letsencrypt.sh
+        cd prd-nginx-certbot
+        sudo ./init-letsencrypt.sh
         cd ..
         if [ $? -ne 0 ]
         then
@@ -227,7 +219,7 @@ printf "${color_no}"
 done
 
 
-# PLEX CLAIM TOKEN
+# PLEX
 if [ ! -f "./prd-plex/.env" ]; 
 then
 # CREATE .ENV FILE
