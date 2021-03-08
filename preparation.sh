@@ -255,6 +255,7 @@ printf "${color_no}"
         sudo docker-compose -f ./prd-plex/docker-compose.yml up -d
         sudo docker-compose -f ./prd-nginx-certbot/docker-compose.yml up -d
         sudo docker-compose -f ./prd-node-red/docker-compose.yml up -d
+        printf "\n"
     break
     ;;
     [nN][oO]|[nN])
