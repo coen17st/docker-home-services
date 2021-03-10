@@ -1,0 +1,49 @@
+version: '3.3'
+services:
+
+  prd-transmission-openvpn-app: 
+    image: haugene/transmission-openvpn
+    container_name: prd-transmission-openvpn-app
+    cap_add:
+        - NET_ADMIN
+    environment:
+        TZ: "${TZ}"
+        LOCAL_NETWORK: "${LOCAL_NETWORK}"
+        OPENVPN_PROVIDER: "${OPENVPN_PROVIDER}"
+        NORDVPN_PROTOCOL: "${NORDVPN_PROTOCOL}"
+        NORDVPN_CATEGORY: "${NORDVPN_CATEGORY}"
+        NORDVPN_COUNTRY: "${NORDVPN_COUNTRY}"
+        TRANSMISSION_HOME: "${TRANSMISSION_HOME}"
+        TRANSMISSION_DOWNLOAD_DIR: "${TRANSMISSION_DOWNLOAD_DIR}"
+        TRANSMISSION_INCOMPLETE_DIR: "${TRANSMISSION_INCOMPLETE_DIR}"
+        TRANSMISSION_WATCH_DIR: "${TRANSMISSION_WATCH_DIR}"
+        OPENVPN_USERNAME: "${OPENVPN_USERNAME}"
+        OPENVPN_PASSWORD: "${OPENVPN_PASSWORD}"
+    logging:
+        driver: json-file
+        options:
+            max-size: 10m
+    networks:
+        home-services:
+    ports:
+        - '9091:9091'
+    volumes:
+        - ./data/:/data
+        - prd-transmission-openvpn-app-config:/config
+        - ../../media/downloads:/data/completed
+
+# VOLUMES
+volumes:
+
+  prd-transmission-openvpn-app-config:
+    name: prd-transmission-openvpn-app-config
+
+# NETWORKS
+networks:
+
+  home-services:
+    driver: bridge
+    name: home-services
+    ipam:
+      config:
+        - subnet: 172.20.0.0/16

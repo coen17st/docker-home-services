@@ -6,5 +6,5 @@ My personal home services running in docker containers
 ```
 git clone https://github.com/coen17st/docker-home-services.git \
 && chmod -R 0755 ./docker-home-services/ \
-&& ./docker-home-services/preparation.sh
+&& ./docker-home-services/script_install_docker-home-services.sh
 ```

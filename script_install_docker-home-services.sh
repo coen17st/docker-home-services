@@ -59,6 +59,9 @@ printf "${color_no}"
     esac
 done
 
+# CREATE FOLDERS
+sudo mkdir ../backups/
+sudo mkdir ../media/
 
 # CHECK IF DOCKER IS INSTALLED
 docker --version > /dev/null 2>&1
@@ -115,7 +118,7 @@ fi
 if [ ! -f "./prd-adguard-home/.env" ]; 
 then
 # CREATE .ENV FILE
-printf "${color_green}Creating default .env file for prd-adguard-home${color_no}"
+printf "${color_green}No .env file found for Adguard Home, a default file will be created. If credentials are required, you will be asked to enter them.${color_no}"
 cp ./prd-adguard-home/.env.example ./prd-adguard-home/.env
 printf "\n\n"
 fi
@@ -136,7 +139,7 @@ fi
 if [ ! -f "./prd-dsmr-reader/.env" ]; 
 then
 # CREATE .ENV FILE
-printf "${color_green}Creating default .env file for prd-dsmr-reader${color_no}"
+printf "${color_green}No .env file found for DSMR-Reader, a default file will be created. If credentials are required, you will be asked to enter them.${color_no}"
 cp ./prd-dsmr-reader/.env.example ./prd-dsmr-reader/.env
 printf "\n\n"
 fi
@@ -171,12 +174,30 @@ read -s dsmrreader_admin_password
 sudo sed -i "s/DSMRREADER_ADMIN_PASSWORD=/DSMRREADER_ADMIN_PASSWORD=$dsmrreader_admin_password/" ./prd-dsmr-reader/.env
 printf "\n"
 fi
-# DSMRREADER DJANGO SECRET KEY
-if grep -qFx "DJANGO_SECRET_KEY=" ./prd-dsmr-reader/.env
+
+
+# ESPHOME
+if [ ! -f "./prd-esphome/.env" ]; 
 then
-printf "${color_green}Enter a Secret key for encryption:${color_no}"
-read -s dsmrreader_django_secret_key
-sudo sed -i "s/DJANGO_SECRET_KEY=/DJANGO_SECRET_KEY=$dsmrreader_django_secret_key/" ./prd-dsmr-reader/.env
+# CREATE .ENV FILE
+printf "${color_green}No .env file found for ESPhome, a default file will be created. If credentials are required, you will be asked to enter them.${color_no}"
+cp ./prd-esphome/.env.example ./prd-esphome/.env
+printf "\n\n"
+fi
+# ASK FOR VARIABLES TO PUT THESE INTO THE .ENV FILE
+# USER
+if grep -qFx "USERNAME=" ./prd-esphome/.env
+then
+printf "${color_green}Enter a USERNAME for the ESPhome webpage:${color_no}"
+read esphome_username
+sudo sed -i "s/USERNAME=/USERNAME=$esphome_username/" ./prd-esphome/.env
+fi
+# PASSWORD
+if grep -qFx "PASSWORD=" ./prd-esphome/.env
+then
+printf "${color_green}Enter a PASSWORD for the ESPhome webpage:${color_no}"
+read -s esphome_password
+sudo sed -i "s/PASSWORD=/PASSWORD=$esphome_password/" ./prd-esphome/.env
 printf "\n\n"
 fi
 
@@ -185,7 +206,7 @@ fi
 if [ ! -f "./prd-home-assistant/.env" ]; 
 then
 # CREATE .ENV FILE
-printf "${color_green}Creating default .env file for prd-home-assistant${color_no}"
+printf "${color_green}No .env file found for Home Assistant, a default file will be created. If credentials are required, you will be asked to enter them.${color_no}"
 cp ./prd-home-assistant/.env.example ./prd-home-assistant/.env
 printf "\n\n"
 fi
@@ -219,7 +240,7 @@ fi
 if [ ! -f "./prd-mosquitto/.env" ]; 
 then
 # CREATE .ENV FILE
-printf "${color_green}Creating default .env file for prd-moquitto${color_no}"
+printf "${color_green}No .env file found for Mosquitto, a default file will be created. If credentials are required, you will be asked to enter them.${color_no}"
 cp ./prd-mosquitto/.env.example ./prd-mosquitto/.env
 printf "\n\n"
 fi
@@ -229,7 +250,7 @@ fi
 if [ ! -f "./prd-node-red/.env" ]; 
 then
 # CREATE .ENV FILE
-printf "${color_green}Creating default .env file for prd-node-red${color_no}"
+printf "${color_green}No .env file found for Node-RED, a default file will be created. If credentials are required, you will be asked to enter them.${color_no}"
 cp ./prd-node-red/.env.example ./prd-node-red/.env
 printf "\n\n"
 fi
@@ -240,7 +261,7 @@ while true
 do
 # ASK IF ROUTER PORTS ARE SET UP CORRECTLY
 printf "${color_green}"
-read -r -p "Check if port 443 and 80 are open to ${ip4} in the router settings. Are these ports open? [Y/n]" input
+read -r -p "Check if port 443 and 80 are open to ${ip4} in your router settings. Do you want to start the nginx reverse proxy letsencrypt script? [Y/n]" input
 printf "${color_no}"
     case $input in
     [yY][eE][sS]|[yY])
@@ -267,7 +288,7 @@ printf "${color_no}"
 if [ ! -f "./prd-plex/.env" ]; 
 then
 # CREATE .ENV FILE
-printf "${color_green}Creating default .env files${color_no}"
+printf "${color_green}No .env file found for plex, a default file will be created. If credentials are required, you will be asked to enter them.${color_no}"
 cp ./prd-plex/.env.example ./prd-plex/.env
 printf "\n\n"
 fi
@@ -283,6 +304,32 @@ printf "\n"
 fi
 
 
+# TRANSMISSION-OPENVPN
+if [ ! -f "./prd-transmission-openvpn/.env" ]; 
+then
+# CREATE .ENV FILE
+printf "${color_green}No .env file found for transmission-openvpn, a default file will be created. If credentials are required, you will be asked to enter them.${color_no}"
+cp ./prd-transmission-openvpn/.env.example ./prd-transmission-openvpn/.env
+printf "\n\n"
+fi
+# ASK FOR VARIABLES TO PUT THESE INTO THE .ENV FILE
+# OPENVPN USERNAME
+if grep -qFx "OPENVPN_USERNAME=" ./prd-transmission-openvpn/.env
+then
+printf "${color_green}Enter your NORDVPN username:${color_no}"
+read openvpn_username
+sudo sed -i "s/OPENVPN_USERNAME=/OPENVPN_USERNAME=$openvpn_username/" ./prd-transmission-openvpn/.env
+fi
+# OPENVPN PASSWORD
+if grep -qFx "OPENVPN_PASSWORD=" ./prd-transmission-openvpn/.env
+then
+printf "${color_green}Enter your NORDVPN password:${color_no}"
+read -s openvpn_password
+sudo sed -i "s/OPENVPN_PASSWORD=/OPENVPN_PASSWORD=$openvpn_password/" ./prd-transmission-openvpn/.env
+printf "\n\n"
+fi
+
+
 # DOCKER COMPOSE UP
 while true
 do
@@ -295,12 +342,15 @@ printf "${color_no}"
         
         sudo docker-compose -f ./prd-adguard-home/docker-compose.yml up -d  
         sudo docker-compose -f ./prd-dsmr-reader/docker-compose.yml up -d
+        sudo docker-compose -f ./prd-esphome/docker-compose.yml up -d
         sudo docker-compose -f ./prd-home-assistant/docker-compose.yml up -d
         sudo docker-compose -f ./prd-mosquitto/docker-compose.yml up -d
         sudo docker-compose -f ./prd-nginx-certbot/docker-compose.yml up -d
         sudo docker-compose -f ./prd-node-red/docker-compose.yml up -d
         sudo docker-compose -f ./prd-plex/docker-compose.yml up -d
         sudo docker-compose -f ./prd-portainer/docker-compose.yml up -d
+        sudo docker-compose -f ./prd-transmission-openvpn/docker-compose.yml up -d
+
         printf "\n"
     break
     ;;

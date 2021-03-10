@@ -3,7 +3,7 @@ version: "3.7"
 services:
   prd-adguard-home-app:
     build: .
-    image: adguard/prd-adguardhome
+    image: prd-adguard-home-app
     container_name: prd-adguard-home-app
     restart: unless-stopped
     environment:

@@ -23,7 +23,7 @@ services:
     volumes:
       - ./database:/config
       - ./transcode/:/transcode
-      - ./media:/data
+      - ../../media/:/data
 
 # NETWORKS
 networks:
