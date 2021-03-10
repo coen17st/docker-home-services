@@ -1,0 +1,53 @@
+version: '3.8'
+
+services:
+  prd-dsmr-reader-app:
+    #build: .
+    image: xirixiz/dsmr-reader-docker:latest
+    container_name: prd-dsmr-reader-app
+    depends_on:
+      - prd-dsmr-reader-db
+    cap_add:
+      - NET_ADMIN
+    restart: always
+    environment:
+      DJANGO_TIME_ZONE: "${TZ}"
+      DJANGO_DATABASE_HOST: "${DJANGO_DATABASE_HOST}"
+      DSMRREADER_ADMIN_USER: "${DSMRREADER_ADMIN_USER}"
+      DSMRREADER_ADMIN_PASSWORD: "${DSMRREADER_ADMIN_PASSWORD}"
+    ports:
+      - 7777:80
+      - 7779:443
+    networks:
+      home-services:
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - ./dsmr_backups:/dsmr/backups
+    #devices:
+    #  - /dev/ttyUSB0:/dev/ttyUSB0
+
+  prd-dsmr-reader-db:
+    image: postgres:12
+    container_name: prd-dsmr-reader-db
+    restart: always
+    environment:
+      TZ: "${TZ}"
+      PG_TZ: "${TZ}"
+      POSTGRES_USER: "${DSMRREADER_POSTGRES_USER}"
+      POSTGRES_PASSWORD: "${DSMRREADER_POSTGRES_PASSWORD}"
+      POSTGRES_DB: "${DSMRREADER_POSTGRES_DB}"
+    networks:
+      home-services:
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - ./dsmrdb:/var/lib/postgresql/data
+
+# NETWORKS
+networks:
+
+  home-services:
+    driver: bridge
+    name: home-services
+    ipam:
+      config:
+        - subnet: 172.20.0.0/16

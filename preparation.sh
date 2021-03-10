@@ -132,6 +132,55 @@ printf "${color_green}Opend port 53 for adguardhome\n\n${color_no}"
 fi
 
 
+# DSMRREADER
+if [ ! -f "./prd-dsmr-reader/.env" ]; 
+then
+# CREATE .ENV FILE
+printf "${color_green}Creating default .env file for prd-dsmr-reader${color_no}"
+cp ./prd-dsmr-reader/.env.example ./prd-dsmr-reader/.env
+printf "\n\n"
+fi
+# ASK FOR VARIABLES TO PUT THESE INTO THE .ENV FILE
+# DSMRREADER POSTGRES USER
+if grep -qFx "DSMRREADER_POSTGRES_USER=" ./prd-dsmr-reader/.env
+then
+printf "${color_green}Enter a POSTGRES USER for the DSMR-Reader database:${color_no}"
+read dsmrreader_postgres_user
+sudo sed -i "s/DSMRREADER_POSTGRES_USER=/DSMRREADER_POSTGRES_USER=$dsmrreader_postgres_user/" ./prd-dsmr-reader/.env
+fi
+# DSMRREADER POSTGRES PASSWORD
+if grep -qFx "DSMRREADER_POSTGRES_PASSWORD=" ./prd-dsmr-reader/.env
+then
+printf "${color_green}Enter a POSTGRES PASSWORD for the DSMR-Reader database:${color_no}"
+read -s dsmrreader_postgres_password
+sudo sed -i "s/DSMRREADER_POSTGRES_PASSWORD=/DSMRREADER_POSTGRES_PASSWORD=$dsmrreader_postgres_password/" ./prd-dsmr-reader/.env
+printf "\n"
+fi
+# DSMRREADER ADMIN_USER
+if grep -qFx "DSMRREADER_ADMIN_USER=" ./prd-dsmr-reader/.env
+then
+printf "${color_green}Enter a username for the DSMR-Reader webinterface:${color_no}"
+read dsmrreader_admin_user
+sudo sed -i "s/DSMRREADER_ADMIN_USER=/DSMRREADER_ADMIN_USER=$dsmrreader_admin_user/" ./prd-dsmr-reader/.env
+fi
+# DSMRREADER ADMIN PASSWORD
+if grep -qFx "DSMRREADER_ADMIN_PASSWORD=" ./prd-dsmr-reader/.env
+then
+printf "${color_green}Enter a password for the DSMR-Reader webinterface:${color_no}"
+read -s dsmrreader_admin_password
+sudo sed -i "s/DSMRREADER_ADMIN_PASSWORD=/DSMRREADER_ADMIN_PASSWORD=$dsmrreader_admin_password/" ./prd-dsmr-reader/.env
+printf "\n"
+fi
+# DSMRREADER DJANGO SECRET KEY
+if grep -qFx "DJANGO_SECRET_KEY=" ./prd-dsmr-reader/.env
+then
+printf "${color_green}Enter a Secret key for encryption:${color_no}"
+read -s dsmrreader_django_secret_key
+sudo sed -i "s/DJANGO_SECRET_KEY=/DJANGO_SECRET_KEY=$dsmrreader_django_secret_key/" ./prd-dsmr-reader/.env
+printf "\n\n"
+fi
+
+
 # HOME ASSISTANT
 if [ ! -f "./prd-home-assistant/.env" ]; 
 then
@@ -175,6 +224,7 @@ cp ./prd-mosquitto/.env.example ./prd-mosquitto/.env
 printf "\n\n"
 fi
 
+
 # NODE-RED
 if [ ! -f "./prd-node-red/.env" ]; 
 then
@@ -183,6 +233,7 @@ printf "${color_green}Creating default .env file for prd-node-red${color_no}"
 cp ./prd-node-red/.env.example ./prd-node-red/.env
 printf "\n\n"
 fi
+
 
 # NGINX-CERTBOT
 while true
@@ -197,13 +248,6 @@ printf "${color_no}"
         cd prd-nginx-certbot
         sudo ./init-letsencrypt.sh
         cd ..
-        if [ $? -ne 0 ]
-        then
-        printf "${color_green}Failed to start nginx-certbot bash script\n\n${color_no}"
-        else
-        printf "\n"
-        printf "${color_green}nginx-certbot setup was succesfully\n${color_no}"
-        fi
     break
     ;;
     [nN][oO]|[nN])
@@ -216,7 +260,7 @@ printf "${color_no}"
     echo "Invalid input..."
     ;;
     esac
-done
+    done
 
 
 # PLEX
@@ -243,18 +287,20 @@ fi
 while true
 do
 printf "${color_green}"
-read -r -p "Are Do you wish to (re)create and start the docker containers? [Y/n]" input
+read -r -p "Do you wish to (re)create and start the docker containers? [Y/n]" input
 printf "${color_no}"
     case $input in
     [yY][eE][sS]|[yY])
         printf "${color_green}Starting the docker containers\n${color_no}"
-        sudo docker-compose -f ./prd-portainer/docker-compose.yml up -d
+        
         sudo docker-compose -f ./prd-adguard-home/docker-compose.yml up -d  
+        sudo docker-compose -f ./prd-dsmr-reader/docker-compose.yml up -d
         sudo docker-compose -f ./prd-home-assistant/docker-compose.yml up -d
         sudo docker-compose -f ./prd-mosquitto/docker-compose.yml up -d
-        sudo docker-compose -f ./prd-plex/docker-compose.yml up -d
         sudo docker-compose -f ./prd-nginx-certbot/docker-compose.yml up -d
         sudo docker-compose -f ./prd-node-red/docker-compose.yml up -d
+        sudo docker-compose -f ./prd-plex/docker-compose.yml up -d
+        sudo docker-compose -f ./prd-portainer/docker-compose.yml up -d
         printf "\n"
     break
     ;;
@@ -269,6 +315,7 @@ printf "${color_no}"
     ;;
     esac
 done
+
 
 # ------------ LAST COMMAND --------------
 # REMOVE ALL IMAGES NOT REFERENCED BY ANY CONTAINER
