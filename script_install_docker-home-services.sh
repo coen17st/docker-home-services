@@ -59,9 +59,11 @@ printf "${color_no}"
     esac
 done
 
+
 # CREATE FOLDERS
-sudo mkdir ../backups/
-sudo mkdir ../media/
+sudo mkdir -p ../backups/
+sudo mkdir -p ../media/
+
 
 # CHECK IF DOCKER IS INSTALLED
 docker --version > /dev/null 2>&1
