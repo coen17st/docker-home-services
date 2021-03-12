@@ -36,28 +36,9 @@ and the following images on Docker:
 =============================================================================================================
 EOF
 
-while true
-do
-printf "${color_green}"
-read -r -p "Do you wish to update and upgrade the system? [Y/n]" input
-printf "${color_no}"
-    case $input in
-    [yY][eE][sS]|[yY])
-        printf "${color_green}Update system\n${color_no}"
-        sudo apt update -y \
-        && sudo apt upgrade -y
-        printf "\n"
-    break
-    ;;
-    [nN][oO]|[nN])
-        printf "\n"
-    break
-    ;;
-    *)
-    echo "Invalid input..."
-    ;;
-    esac
-done
+
+# UPDATE APT PACKAGES
+sudo apt update -y
 
 
 # CREATE FOLDERS

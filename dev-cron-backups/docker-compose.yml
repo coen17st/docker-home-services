@@ -1,21 +1,15 @@
 version: "3.7"
 
 services:
-  prd-node-red-app:
+  dev-cron-backups-app:
     build: .
-    image: nodered/prd-node-red:latest
-    container_name: prd-node-red-app
+    image: dev-cron-backups-app
+    container_name: dev-cron-backups-app
     restart: unless-stopped
     environment:
-      TZ: "${TZ}"
-      PUID: "1000"
-      PGID: "1000"
-    ports:
-      - "1880:1880"
+      DROPBOX_ACCESS_TOKEN: "${DROPBOX_ACCESS_TOKEN}"
     networks:
       home-services:
-    volumes:
-      - ./data:/data
 
 # NETWORKS
 networks:

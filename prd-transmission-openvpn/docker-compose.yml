@@ -4,6 +4,7 @@ services:
   prd-transmission-openvpn-app: 
     image: haugene/transmission-openvpn
     container_name: prd-transmission-openvpn-app
+    restart: unless-stopped
     cap_add:
         - NET_ADMIN
     environment:
