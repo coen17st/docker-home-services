@@ -1,5 +1,6 @@
 #!/bin/bash
-# DON'T CHANGE ANYTHING BELOW
+
+# VARIABLES
 ip4=$(hostname -I | cut -d' ' -f1)
 date=`date '+%Y-%m-%d %H:%M:%S'`
 color_blue='\033[1;34m'
@@ -98,24 +99,54 @@ fi
 
 
 # ADGUARD HOME
-if [ ! -f "./prd-adguard-home/.env" ]; 
-then
-# CREATE .ENV FILE
-printf "${color_green}No .env file found for Adguard Home, a default file will be created. If credentials are required, you will be asked to enter them.${color_no}"
-cp ./prd-adguard-home/.env.example ./prd-adguard-home/.env
-printf "\n\n"
-fi
-# FREE PORT 53 FOR ADGUARD
-if grep -qFx "#DNSStubListener=yes" /etc/systemd/resolved.conf
-then
-sudo sed -i "s|#DNSStubListener=yes|DNSStubListener=no|g" /etc/systemd/resolved.conf
-sudo systemctl restart systemd-resolved
-printf "${color_green}Opend port 53 for adguardhome\n\n${color_no}"
-    if [ $? -ne 0 ]
+prd-adguard-home()
+{
+    local name="prd-adguard-home"
+    if [ ! -f "./${name}/.env" ]; 
     then
-    printf "${color_green}Failed to change DNSStubListener\n\n${color_no}"
+    # CREATE .ENV FILE
+    printf "${color_green}No .env file found for ${name}, a default file will be created. If credentials are required, you will be asked to enter them.${color_no}"
+    cp ./${name}/.env.example ./${name}/.env
+    printf "\n\n"
     fi
-fi
+    # FREE PORT 53 FOR ADGUARD
+    if grep -qFx "#DNSStubListener=yes" /etc/systemd/resolved.conf
+    then
+    sudo sed -i "s|#DNSStubListener=yes|DNSStubListener=no|g" /etc/systemd/resolved.conf
+    sudo systemctl restart systemd-resolved
+    printf "${color_green}Opend port 53 for adguardhome\n\n${color_no}"
+        if [ $? -ne 0 ]
+        then
+        printf "${color_green}Failed to change DNSStubListener\n\n${color_no}"
+        fi
+    fi
+}
+prd-adguard-home
+
+
+# PRD-CRON-BACKUPS
+prd-cron-backups()
+{
+    local name="prd-cron-backups"
+    # CRON-BACKUPS
+    if [ ! -f "./${name}/.env" ]; 
+    then
+    # CREATE .ENV FILE
+    printf "${color_green}No .env file found for ${name}, a default file will be created. If credentials are required, you will be asked to enter them.${color_no}"
+    cp ./${name}/.env.example ./${name}/.env
+    printf "\n\n"
+    fi
+    # ASK FOR VARIABLES TO PUT THESE INTO THE .ENV FILE
+    # DROPBOX_ACCESS_TOKEN
+    if grep -qFx "DROPBOX_ACCESS_TOKEN=" ./${name}/.env
+    then
+    printf "${color_green}Enter your Dropbox app token:${color_no}"
+    read dropbox_app_token
+    sudo sed -i "s/DROPBOX_ACCESS_TOKEN=/DROPBOX_ACCESS_TOKEN=$dropbox_app_token/" ./${name}/.env
+    printf "\n"
+    fi
+}
+prd-cron-backups
 
 
 # DSMRREADER
@@ -323,7 +354,8 @@ printf "${color_no}"
     [yY][eE][sS]|[yY])
         printf "${color_green}Starting the docker containers\n${color_no}"
         
-        sudo docker-compose -f ./prd-adguard-home/docker-compose.yml up -d  
+        sudo docker-compose -f ./prd-adguard-home/docker-compose.yml up -d
+        sudo docker-compose -f ./prd-cron-backups/docker-compose.yml up -d    
         sudo docker-compose -f ./prd-dsmr-reader/docker-compose.yml up -d
         sudo docker-compose -f ./prd-esphome/docker-compose.yml up -d
         sudo docker-compose -f ./prd-home-assistant/docker-compose.yml up -d

@@ -1,15 +1,19 @@
 version: "3.7"
 
 services:
-  dev-cron-backups-app:
+  prd-cron-backups-app:
     build: .
-    image: dev-cron-backups-app
-    container_name: dev-cron-backups-app
+    image: prd-cron-backups-app
+    container_name: prd-cron-backups-app
     restart: unless-stopped
     environment:
       DROPBOX_ACCESS_TOKEN: "${DROPBOX_ACCESS_TOKEN}"
     networks:
       home-services:
+    volumes:
+      - ./backups:/backups
+      - ../prd-esphome:/data/prd-esphome
+      - ../prd-home-assistant:/data/prd-home-assistant
 
 # NETWORKS
 networks:

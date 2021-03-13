@@ -1,2 +1,2 @@
-* * * * * root /data/script.sh
+* * * * * root /data/tar_to_dropbox.sh
 # An empty line is required at the end of this file for a valid cron file.
